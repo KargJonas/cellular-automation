@@ -1,30 +1,35 @@
 const cnv = document.querySelector("canvas");
 const c = cnv.getContext("2d");
 
-const width = cnv.width;
-const height = cnv.height;
-
 const cellSize = 5;
 
-const gridW = width / cellSize;
-const gridH = height / cellSize;
+let width, height;
+
+function resize() {
+  width = Math.floor(innerWidth / cellSize);
+  height = Math.floor(innerHeight / cellSize);
+  cnv.setAttribute("width", width);
+  cnv.setAttribute("height", height);
+}
+
+resize();
 
 function mkGrid() {
-  const c = new Array(gridW);
+  const c = new Array(width);
 
-  for (let x = 0; x < gridW; x++) {
-    c[x] = new Array(gridH);
+  for (let x = 0; x < width; x++) {
+    c[x] = new Array(height);
   }
 
   return c;
 }
 
 function mkRndGrid() {
-  const c = new Array(gridW);
+  const c = new Array(width);
 
-  for (let x = 0; x < gridW; x++) {
-    c[x] = new Array(gridH);
-    for (let y = 0; y < gridH; y++) {
+  for (let x = 0; x < width; x++) {
+    c[x] = new Array(height);
+    for (let y = 0; y < height; y++) {
       c[x][y] = Math.round(Math.random() * 3);
     }
   }
@@ -36,8 +41,8 @@ let grid = mkRndGrid();
 const tempGrid = mkGrid();
 
 function forEachCell(callback) {
-  for (let x = 0; x < gridW; x++)
-    for (let y = 0; y < gridH; y++) callback(x, y);
+  for (let x = 0; x < width; x++)
+    for (let y = 0; y < height; y++) callback(x, y);
 }
 
 function draw() {
@@ -58,7 +63,7 @@ function draw() {
         break;
     }
 
-    c.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    c.fillRect(x, y, 1, 1);
   });
 }
 
@@ -83,9 +88,9 @@ function getNeighbors(x, y) {
 
     if (
       -1 < neighborX &&
-      neighborX < gridW &&
+      neighborX < width &&
       -1 < neighborY &&
-      neighborY < gridH
+      neighborY < height
     )
       neighbors.push(grid[neighborX][neighborY]);
   }
@@ -122,7 +127,7 @@ function update() {
     // My Creation
     if (cell == 0 && values[2] >= 2) {
       tempGrid[x][y] = 2;
-    } else if(cell == 2 && values[2] >= 3) {
+    } else if (cell == 2 && values[2] >= 3) {
       tempGrid[x][y] = 0;
     }
 
@@ -133,11 +138,11 @@ function update() {
 }
 
 function loop() {
-  setTimeout(() => {
-    window.requestAnimationFrame(loop);
-    update();
-    draw();
-  }, 10);
+  // setTimeout(() => {
+  window.requestAnimationFrame(loop);
+  update();
+  draw();
+  // }, 10);
 }
 
 loop();
